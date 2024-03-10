@@ -28,7 +28,7 @@ project(${PROJECT_NAME} C CXX ASM)
 #set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
 #set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
 
-# Набор переменных для использования локальной библиотеки Cube.
+# Набор переменных для использования библиотеки HAL из папки проекта.
 set(STM32_CMSIS_PATH                "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS")
 set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
 set(STM32_HAL_${MCU_FAMILY}_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32${MCU_FAMILY}xx_HAL_Driver")
@@ -71,12 +71,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F334x8)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<CONFIG:DEBUG>:-O2 -gdwarf-2 -gstrict-dwarf>
+    $<$<CONFIG:DEBUG>:-O2 -g3>
     $<$<CONFIG:RELEASE>:-O2>
     $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>
 )
 
-target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
+target_link_options(${PROJECT_NAME} PRIVATE LINKER:--print-memory-usage
+    $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,12.0>:LINKER:--no-warn-rwx-segments>)
 
 # Подключаем конфигурационный файл компоновщика.
 stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)
@@ -86,3 +87,35 @@ stm32_generate_srec_file(${PROJECT_NAME})
 stm32_generate_binary_file(${PROJECT_NAME})
 stm32_generate_hex_file(${PROJECT_NAME})
 stm32_generate_lss_file(${PROJECT_NAME})
+
+if ( ENABLE_UNIT_TESTING )
+
+    include(CTest)
+
+    message(STATUS "ENABLE_UNIT_TESTING is ON")
+
+    if (BUILD_TESTING)
+        message(STATUS "BUILD_TESTING is ON")
+    endif()
+
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ENABLE_UNIT_TESTING)
+
+    if ( TEST_FRAMEWORK STREQUAL Unity )
+        target_compile_definitions(${PROJECT_NAME} PRIVATE USE_TEST_FRAMEWORK_UNITY)
+
+        add_subdirectory(RTT)
+        add_subdirectory(Unity)
+
+        set(TEST_EXECUTABLE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.elf")
+    else()
+        # Внимание! Перед тестированием необходимо загрузить тестируемую прошивку в мк вручную.
+        set(TEST_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/build/debug/${PROJECT_NAME}.elf")
+        set(GDB_TEST_RUNNER "${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_runner.cmd")
+    endif()
+
+    add_subdirectory(Tests/BBC_SW_LLR/BOARD_TEST_01)
+    add_subdirectory(Tests/BBC_SW_LLR/BOARD_TEST_02)
+    add_subdirectory(Tests/BBC_SW_LLR/BOARD_TEST_03)
+    add_subdirectory(Tests/BBC_SW_LLR/BOARD_TEST_10)
+
+endif()

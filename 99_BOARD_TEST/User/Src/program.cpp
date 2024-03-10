@@ -13,6 +13,10 @@ extern uint8_t pics[];
  */
 void init( void )
 {
+#ifdef USE_SEGGER_RTT
+    // Настройка терминала 0 для работы в неблокирующем режиме.
+    SEGGER_RTT_ConfigUpBuffer( 0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_TRIM );
+#endif
 }
 
 

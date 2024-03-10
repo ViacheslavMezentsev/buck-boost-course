@@ -2,60 +2,73 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "cmake",
       "label": "CMake: build",
+      "type": "cmake",
       "command": "build",
-      "targets": [
-          "ALL_BUILD"
+      "targets": [ "all" ],
+      "group": "build",
+      "detail": "Сборка и проекта."
+    },
+    // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
+    {
+      "label": "Flash Master (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device STM32F334C8 -if SWD -speed 4000 -USB 661050098 -CommandFile flash.jlink -NoGui 1)"
       ],
-      "problemMatcher": [],
-      "group": "build"
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Master мк (j-link)."
     },
     {
+      "label": "Flash Slave (j-link)",
       "type": "shell",
-      "label": "flash",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device STM32F334C8 -if SWD -speed 4000 -USB 661043112 -CommandFile flash.jlink -NoGui 1)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Slave мк (j-link)."
+    },
+    {
+      "label": "Flash Master & Slave (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo device STM32F334C8 & echo si SWD & echo speed 4000 & echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (for %n in (661050098,661043112) do JLink.exe -USB %n -CommandFile flash.jlink -NoGui 1)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Master и Slave мк (j-link)."
+    },
+    {
+      "label": "Flash (st-flash)",
+      "type": "shell",
       "command": "st-flash",
       "args": [
         "--reset",
         "write",
-        "${input:workspaceFolderForwardSlash}/build/${workspaceFolderBasename}.bin",
+        "${command:cmake.buildDirectory}/${workspaceFolderBasename}.bin",
         "0x8000000"
       ],
       "options": {
         "cwd": "${workspaceFolder}/build"
       },
       "dependsOn": "CMake: build",
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "Builds project and flashes firmware."
-
+      "group": "build",
+      "detail": "Сборка и прошивка проекта (st-link)."
     },
     {
+      "label": "Erase (st-flash)",
       "type": "shell",
-      "label": "erase",
       "command": "st-flash",
-      "args": [
-        "--connect-under-reset",
-        "erase"
-      ],
-      "detail": "mass erase of chip"
-    }
-  ],
-  
-  "inputs": [
-    {
-      "id": "workspaceFolderForwardSlash",
-      "type": "command",
-      "command": "extension.commandvariable.transform",
-      "args": {
-        "text": "${workspaceFolder}",
-        "find": "\\\\",
-        "replace": "/",
-        "flags": "g"
-      }
+      "args": [ "--connect-under-reset", "erase" ],
+      "detail": "Полная очистка чипа."
     }
   ]
 }

@@ -28,7 +28,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#ifdef USE_TEST_FRAMEWORK_UNITY
+#include "BBC_SW_LLR_BOARD_TEST_01.h"
+#endif
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,7 +61,10 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#ifdef ENABLE_UNIT_TESTING
+void setUp (void) {} /* Is run before every test, put unit init calls here. */
+void tearDown (void) {} /* Is run after every test, put unit clean-up calls here. */
+#endif
 /* USER CODE END 0 */
 
 /**
@@ -79,6 +84,23 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   init();
+
+#ifdef USE_TEST_FRAMEWORK_UNITY
+
+  UNITY_BEGIN();
+
+  RUN_TEST( BBC_SW_LLR_BOARD_TEST_01_01 );
+
+  int result = UNITY_END();
+
+  SEGGER_RTT_WriteString( 0, ( result == 0 ) ? "*** PASSED ***\n" : "*** FAILED ***\n" );
+
+  // Останавливаем JRun.
+  SEGGER_RTT_WriteString( 0, "*STOP*\n" );
+
+  return HAL_OK;
+
+#endif
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -91,11 +113,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_HRTIM1_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  MX_TIM3_Init();
+  MX_HRTIM1_Init();
   MX_SPI1_Init();
+  MX_TIM3_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 

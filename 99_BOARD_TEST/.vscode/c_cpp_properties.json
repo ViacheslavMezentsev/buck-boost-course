@@ -4,14 +4,23 @@
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F334x8" ],
+        "defaultDefines": [
+            "__GNUC__",
+            "USE_HAL_DRIVER",
+            "STM32F334x8"
+        ],
         "compiler": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe"
-      },    
+    },
     "configurations": [
         {
             "name": "Debug",
-            "includePath": [ "${defaultIncludePath}" ],
-            "defines": [ "${defaultDefines}", "DEBUG" ],
+            "includePath": [
+                "${defaultIncludePath}"
+            ],
+            "defines": [
+                "${defaultDefines}",
+                "DEBUG"
+            ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
             "configurationProvider": "ms-vscode.cmake-tools",
@@ -24,8 +33,12 @@
         },
         {
             "name": "Release",
-            "includePath": [ "${defaultIncludePath}" ],
-            "defines": [ "${defaultDefines}" ],
+            "includePath": [
+                "${defaultIncludePath}"
+            ],
+            "defines": [
+                "${defaultDefines}"
+            ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
             "configurationProvider": "ms-vscode.cmake-tools",
@@ -34,7 +47,7 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
-            }            
+            }
         }
     ],
     "version": 4
