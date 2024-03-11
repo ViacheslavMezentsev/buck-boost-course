@@ -2,6 +2,7 @@
 set suppress-cli-notifications on
 set confirm off
 
+# Доопределяем используемые в тестах символы.
 macro define false 0
 macro define true !false
 

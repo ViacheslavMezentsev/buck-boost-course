@@ -45,7 +45,8 @@ for %%n in (1,2) do (
     call :ExitOnError
 )
 
-:: Запуск клиента и теста. Поток ошибок перенаправляем в nul.  
+:: Запуск клиента и теста. Поток ошибок перенаправляем в nul.
+:: TODO: Проверить наличие оставшися точек останова от предыдущей команды. Если они есть, то исправить добавлением delete.
 for %%n in (1,2) do (
     %gdbclient% -iex "set auto-load safe-path /" -ix "%gdbinit%" --ex "set $mcu=%%n" --ex "source %script%" --quiet --symbols=%1 --batch-silent 2> nul
     call :ExitOnError
