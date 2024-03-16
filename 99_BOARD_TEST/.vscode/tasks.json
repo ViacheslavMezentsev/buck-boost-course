@@ -47,6 +47,18 @@
       "detail": "Прошивка Master и Slave мк (j-link)."
     },
     {
+      "label": "Reset Master & Slave (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo q) > flash.jlink) && (for %n in (Master,Slave) do JLink.exe -NoGui 1 -USB %n -CommandFile flash.jlink)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Сброс Master и Slave мк (j-link)."
+    },
+    {
       "label": "Flash (st-flash)",
       "type": "shell",
       "command": "st-flash",
