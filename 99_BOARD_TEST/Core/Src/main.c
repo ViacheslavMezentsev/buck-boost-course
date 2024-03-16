@@ -28,9 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#ifdef USE_TEST_FRAMEWORK_UNITY
-#include "BBC_SW_LLR_BOARD_TEST_01.h"
-#endif
+#include "Unity/unity.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,13 +85,15 @@ int main(void)
 
 #ifdef USE_TEST_FRAMEWORK_UNITY
 
+  extern void BBC_SW_LLR_BOARD_TEST_01_01( void );
+
   UNITY_BEGIN();
 
   RUN_TEST( BBC_SW_LLR_BOARD_TEST_01_01 );
 
   int result = UNITY_END();
 
-  SEGGER_RTT_WriteString( 0, ( result == 0 ) ? "*** PASSED ***\n" : "*** FAILED ***\n" );
+  SEGGER_RTT_WriteString( 0, ( result == 0 ) ? "--- PASSED ---\n" : "--- FAILED ---\n" );
 
   // Останавливаем JRun.
   SEGGER_RTT_WriteString( 0, "*STOP*\n" );

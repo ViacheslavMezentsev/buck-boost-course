@@ -14,6 +14,12 @@
     "configurations" : 
     [
       {
+        "name": "Python: Attach using Process ID",
+        "type": "debugpy",
+        "request": "attach",
+        "processId": "${command:pickProcess}"
+      },
+      {
         "name" : "Debug (pyocd)",
         "cwd" : "${workspaceRoot}",
         "executable" : "${config:executable}",        

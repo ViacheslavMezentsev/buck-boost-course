@@ -1,6 +1,6 @@
 @echo off
 :: Вариант 1. Запуск сервера, запуск клиента, выполнение теста, завершение клиента и сервера
-::( start /min "" JLinkGDBServerCL.exe -device STM32F334C8 -if swd -port 2334 -swoport 2335 -telnetport 2336 -select usb=XXXXXXXXX -nogui -noir -novd -nosinglerun -silent ) ^
+::( start /min "" JLinkGDBServerCL.exe -device ${config:device} -if swd -port 2334 -swoport 2335 -telnetport 2336 -select usb=XXXXXXXXX -nogui -noir -novd -nosinglerun -silent ) ^
 ::    && ( arm-none-eabi-gdb.exe --iex "set $mcu=2" --quiet --symbols=%1 --command=%script% --batch-silent 2> nul )
 
 set gdbscript=%~f2.gdb
@@ -35,19 +35,25 @@ goto:eof
 
 :: Вариант 2.
 :: Запуск сервера(-ов) отдельно:
-:: JLinkGDBServerCL.exe -device STM32F334C8 -if swd -port 2331 -swoport 2332 -telnetport 2333 -select usb=XXXXXXXXX -nogui -noir -novd -nosinglerun -silent -nohalt
-:: JLinkGDBServerCL.exe -device STM32F334C8 -if swd -port 2334 -swoport 2335 -telnetport 2336 -select usb=XXXXXXXXX -nogui -noir -novd -nosinglerun -silent -nohalt
+:: JLinkGDBServerCL.exe -device ${config:device} -if swd -port 2331 -swoport 2332 -telnetport 2333 -select usb=${config:jlink-masterid} -nogui -noir -novd -nosinglerun -silent -nohalt
+:: JLinkGDBServerCL.exe -device ${config:device} -if swd -port 2334 -swoport 2335 -telnetport 2336 -select usb=${config:jlink-slaveid} -nogui -noir -novd -nosinglerun -silent -nohalt
 :test
 
-:: Перед тестом нужно привести модуль в рабочее состояние.
-for %%n in (1,2) do (
-    %gdbclient% -iex "set auto-load safe-path /" -ix "%gdbinit%" --ex "set $mcu=%%n" --quiet --symbols=%1 --command=%gdbrunning% --batch-silent 2> nul
+:: Перед тестом нужно привести стенд в начальное состояние.
+::for %%n in (1,2) do (
+::    %gdbclient% -iex "set auto-load safe-path /" -ix "%gdbinit%" --ex "set $mcu=%%n" --command=%gdbrunning% ^
+::        --quiet --symbols=%1 --batch-silent 2> nul
+::    call :ExitOnError
+::)
+for %%n in (Master,Slave) do (
+    ((echo r & echo h & echo g & echo q) > %~dp0flash.jlink) ^
+        && (JLink.exe -device STM32F334C8 -if SWD -speed 4000 -NoGui 1 -USB %%n -CommandFile %~dp0flash.jlink) 1> nul
     call :ExitOnError
 )
 
 :: Запуск клиента и теста. Поток ошибок перенаправляем в nul.
-:: TODO: Проверить наличие оставшися точек останова от предыдущей команды. Если они есть, то исправить добавлением delete.
 for %%n in (1,2) do (
-    %gdbclient% -iex "set auto-load safe-path /" -ix "%gdbinit%" --ex "set $mcu=%%n" --ex "source %script%" --quiet --symbols=%1 --batch-silent 2> nul
+     %gdbclient% -iex "set auto-load safe-path /" -ix "%gdbinit%" --ex "set $mcu=%%n" --ex "source %script%" ^
+        --quiet --symbols=%1 --batch-silent 2> nul
     call :ExitOnError
 )

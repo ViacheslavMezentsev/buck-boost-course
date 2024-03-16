@@ -7,23 +7,15 @@ macro define false 0
 macro define true !false
 
 # Подключает и запускает MCU (только для J-Link).
-define connect_and_run_mcu
-
-    if $arg0 == 1
-        target remote localhost:2331
-    end
-
-    if $arg0 == 2
-        target remote localhost:2334
-    end
+define run_mcu
+    
+    pi gdb.execute( 'target remote :233' + ('4','1')[ gdb.convenience_variable( 'arg0' ) == 1 ] )
 
     # Протестировано для J-Link OB.
+    printf "%u: ", $arg0
     monitor reset
-
-    break main
-    continue
-
     monitor go
+    disconnect
 
 end
 
@@ -36,12 +28,13 @@ define connect_mcu1_only
     end
 
     # Запускаем MCU2.
-    connect_and_run_mcu 2
+    run_mcu 2
 
     # Подключаемся к MCU1.
     target remote localhost:2331
 
     # Выполняем сброс.
+    printf "%u: ", $mcu
     monitor reset
 
 end
@@ -55,12 +48,13 @@ define connect_mcu2_only
     end
 
     # Запускаем MCU1.
-    connect_and_run_mcu 1
+    run_mcu 1
 
     # Подключаемся к MCU2.
     target remote localhost:2334
 
     # Выполняем сброс.
+    printf "%u: ", $mcu
     monitor reset
 
 end
@@ -70,13 +64,13 @@ end
 define connect_both_mcu
 
     if $mcu == 1
-        connect_and_run_mcu 2
+        run_mcu 2
 
         # Подключаемся к MCU1.
         target remote localhost:2331
     else
         if $mcu == 2
-            connect_and_run_mcu 1
+            run_mcu 1
             
             # Подключаемся к MCU1.
             target remote localhost:2334
@@ -86,6 +80,7 @@ define connect_both_mcu
     end
 
     # Выполняем сброс удалённого микроконтроллера.
+    printf "%u: ", $mcu
     monitor reset
 
 end
@@ -147,7 +142,7 @@ define break_main_and_set_timeout
     silent
     set $result = false
     disconnect_and_quit
-    end    
+    end
 end
 
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 # Семейство и модель мк.
 set(MCU STM32F334C8T)
@@ -35,7 +35,7 @@ set(STM32_HAL_${MCU_FAMILY}_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32${
 
 # Использование локальных файлов.
 set(CMSIS_${MCU_FAMILY}_SYSTEM                 "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32f3xx.c")
-set(CMSIS_${MCU_FAMILY}_F334x8_STARTUP         "${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f334x8.s")
+set(CMSIS_${MCU_FAMILY}_F334x8_STARTUP         "${CMAKE_CURRENT_SOURCE_DIR}/Core/Startup/startup_stm32f334x8.s")
 
 stm32_get_chip_type(${MCU_FAMILY} ${MCU_MODEL} MCU_TYPE)
 stm32_fetch_cmsis(${MCU_FAMILY})

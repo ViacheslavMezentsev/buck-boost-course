@@ -2,11 +2,11 @@
 import gdb
 import re
 
-# Подключаемся и делаем сброс.
-gdb.execute( 'cmds connect_both_mcu; set $result = false' )
-
 # Последовательность действий (см. описание требования).
 try:
+    # Подключаемся и делаем сброс.
+    gdb.execute( 'cmds connect_both_mcu; set $result = false' )
+
     # Устанавливаем ограничение по времени.
     gdb.execute( 'break_main_and_continue' )
 
@@ -37,11 +37,13 @@ try:
             # Сравниваем с текущим адресом.
             result = hex( frame.pc() ) == match[0] if match else False
 
-        # Значение $result: true - тест пройден, false - не пройден.
-        gdb.set_convenience_variable( 'result', result )
+            # Значение $result: true - тест пройден, false - не пройден.
+            gdb.set_convenience_variable( 'result', result )
 
-# Обработка исключений: $result = false.
-except gdb.error: gdb.set_convenience_variable( 'result', False )
+except: 
+    # Обработка исключений: $result = false.
+    gdb.set_convenience_variable( 'result', False )
 
-# Отключаемся и выходим.
-gdb.execute( 'disconnect_and_quit' )
+finally:
+    # Отключаемся и выходим.
+    gdb.execute( 'disconnect_and_quit' )

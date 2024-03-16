@@ -16,7 +16,7 @@
       "command": "cmd",
       "args": [
         "/C",
-        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device STM32F334C8 -if SWD -speed 4000 -USB 661050098 -CommandFile flash.jlink -NoGui 1)"
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if SWD -speed 4000 -NoGui 1 -USB Master -CommandFile flash.jlink)"
       ],
       "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
@@ -28,7 +28,7 @@
       "command": "cmd",
       "args": [
         "/C",
-        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device STM32F334C8 -if SWD -speed 4000 -USB 661043112 -CommandFile flash.jlink -NoGui 1)"
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if SWD -speed 4000 -NoGui 1 -USB Slave -CommandFile flash.jlink)"
       ],
       "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
@@ -40,7 +40,7 @@
       "command": "cmd",
       "args": [
         "/C",
-        "((echo device STM32F334C8 & echo si SWD & echo speed 4000 & echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (for %n in (661050098,661043112) do JLink.exe -USB %n -CommandFile flash.jlink -NoGui 1)"
+        "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (for %n in (Master,Slave) do JLink.exe -NoGui 1 -USB %n -CommandFile flash.jlink)"
       ],
       "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",

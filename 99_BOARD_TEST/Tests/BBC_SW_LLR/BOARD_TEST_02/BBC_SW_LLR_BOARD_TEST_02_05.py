@@ -1,11 +1,11 @@
 # LLR IDs: BBC_SW_LLR_BOARD_TEST_02_05
 import gdb
 
-# Подключаемся и делаем сброс.
-gdb.execute( 'cmds connect_both_mcu; set $result = false' )
-
 # Последовательность действий (см. описание требования).
 try:
+    # Подключаемся и делаем сброс.
+    gdb.execute( 'cmds connect_both_mcu; set $result = false' )
+
     # Проверяем наличие символа.
     if gdb.lookup_global_symbol( 'HAL_UART_MspDeInit' ) is None:
         gdb.execute( 'disconnect_and_quit' )
@@ -34,8 +34,10 @@ try:
     gdb.set_convenience_variable( 'result', result )
     gdb.execute( 'finish' )
 
-# Обработка исключений: $result = false.
-except gdb.error: gdb.set_convenience_variable( 'result', False )
+except: 
+    # Обработка исключений: $result = false.
+    gdb.set_convenience_variable( 'result', False )
 
-# Отключаемся и выходим.
-gdb.execute( 'disconnect_and_quit' )
+finally:
+    # Отключаемся и выходим.
+    gdb.execute( 'disconnect_and_quit' )

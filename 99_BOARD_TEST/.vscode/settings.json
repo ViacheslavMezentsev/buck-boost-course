@@ -2,10 +2,7 @@
     "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
     "cmake.useCMakePresets": "always",
     "cmake.options.statusBarVisibility": "hidden",
-    "cmake.configureEnvironment":
-    {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "on"
-    },
+    "cmake.configureEnvironment": { "CMAKE_EXPORT_COMPILE_COMMANDS": "on" },
     // cortex-debug (Windows).
     "cortex-debug.pyocdPath.windows": "pyocd",
     "cortex-debug.gdbPath.windows": "${env:UserProfile}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gdb.exe",
@@ -18,6 +15,6 @@
     "device": "STM32F334C8",
     "svdFile" : "${workspaceRoot}/STM32F3x4.svd",
     "targetFamily": "stm32f3x",
-    "jlink-masterid": "661050098",
-    "jlink-slaveid": "661043112"
+    "jlink-masterid": "Master",
+    "jlink-slaveid": "Slave"
 }
