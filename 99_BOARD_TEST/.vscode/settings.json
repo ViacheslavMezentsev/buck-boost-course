@@ -2,6 +2,7 @@
     "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
     "cmake.useCMakePresets": "always",
     "cmake.options.statusBarVisibility": "hidden",
+    //"cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
     "cmake.configureEnvironment": { "CMAKE_EXPORT_COMPILE_COMMANDS": "on" },
     // cortex-debug (Windows).
     "cortex-debug.pyocdPath.windows": "pyocd",
@@ -10,6 +11,11 @@
     "cortex-debug.stlinkPath.windows": "${env:ProgramFiles}/stlink-gdb-server/bin/ST-LINK_gdbserver.exe",
     "cortex-debug.JLinkGDBServerPath.windows": "${env:ProgramFiles}/SEGGER/JLink/JLinkGDBServerCL.exe",
     "cortex-debug.openocdPath.windows": "${env:UserProfile}/scoop/apps/openocd/current/bin/openocd.exe",
+    //"C_Cpp.intelliSenseEngine": "disabled",
+    //"clangd.path": "${env:UserProfile}/scoop/apps/llvm/current/bin/clangd.exe",
+    //"clangd.arguments": ["-log=verbose", "-pretty", "--background-index", 
+    //                     //"--query-driver=${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe",
+    //                     "--compile-commands-dir=${workspaceRoot}/build/${buildType}"],
     // Настройки проекта.
     "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
     "device": "STM32F334C8",

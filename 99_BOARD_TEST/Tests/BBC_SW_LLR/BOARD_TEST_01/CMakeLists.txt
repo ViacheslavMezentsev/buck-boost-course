@@ -7,13 +7,20 @@ if ( TEST_FRAMEWORK STREQUAL Unity )
     target_sources(${PROJECT_NAME} PRIVATE BBC_SW_LLR_BOARD_TEST_01.c)
 
     string(SUBSTRING ${MCU} 0 11 DEVICE)
-    set(JRUN_CTEST_COMMAND "JRun" --rtt --device ${DEVICE} --if SWD --speed 4000 --usb Master --silent)
+    set(JRUN_CTEST_COMMAND "JRun" --rtt --device ${DEVICE} --if SWD --speed 4000 --usb 661050098 --silent)
 
-    add_test(BBC_SW_LLR_BOARD_TEST_01_01 ${JRUN_CTEST_COMMAND} ${TEST_EXECUTABLE})
+    set(TestList
+        # Модуль инициализации АЦП.
+        BBC_SW_LLR_BOARD_TEST_01_01
+    )
 
-    set_tests_properties(BBC_SW_LLR_BOARD_TEST_01_01 PROPERTIES TIMEOUT 5)
-    set_tests_properties(BBC_SW_LLR_BOARD_TEST_01_01 PROPERTIES PASS_REGULAR_EXPRESSION "--- PASSED ---") 
-    set_tests_properties(BBC_SW_LLR_BOARD_TEST_01_01 PROPERTIES FAIL_REGULAR_EXPRESSION "--- FAILED ---")
+    foreach (test ${TestList})
+        add_test(${test} ${JRUN_CTEST_COMMAND} ${TEST_EXECUTABLE})
+    endforeach()
+
+    set_tests_properties(${TestList} PROPERTIES TIMEOUT 5)
+    set_tests_properties(${TestList} PROPERTIES PASS_REGULAR_EXPRESSION "--- PASSED ---" )
+    set_tests_properties(${TestList} PROPERTIES FAIL_REGULAR_EXPRESSION "--- FAILED ---" )
 
 else()
 

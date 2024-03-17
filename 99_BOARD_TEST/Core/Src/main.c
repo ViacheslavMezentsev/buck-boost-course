@@ -86,14 +86,16 @@ int main(void)
 #ifdef USE_TEST_FRAMEWORK_UNITY
 
   extern void BBC_SW_LLR_BOARD_TEST_01_01( void );
+  extern void BBC_SW_LLR_BOARD_TEST_02_01( void );
 
   UNITY_BEGIN();
 
   RUN_TEST( BBC_SW_LLR_BOARD_TEST_01_01 );
+  RUN_TEST( BBC_SW_LLR_BOARD_TEST_02_01 );
 
   int result = UNITY_END();
 
-  SEGGER_RTT_WriteString( 0, ( result == 0 ) ? "--- PASSED ---\n" : "--- FAILED ---\n" );
+  SEGGER_RTT_WriteString( 0, ( result == HAL_OK ) ? "--- PASSED ---\n" : "--- FAILED ---\n" );
 
   // Останавливаем JRun.
   SEGGER_RTT_WriteString( 0, "*STOP*\n" );

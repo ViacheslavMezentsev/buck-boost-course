@@ -1,8 +1,8 @@
 {
     "recommendations": [
         "ms-vscode.cpptools",
-        "twxs.cmake",
         "ms-vscode.cmake-tools",
         "marus25.cortex-debug",
+        "twxs.cmake",
     ]
 }
