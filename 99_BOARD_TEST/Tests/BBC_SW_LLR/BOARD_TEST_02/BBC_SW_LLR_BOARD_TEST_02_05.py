@@ -34,10 +34,11 @@ try:
     gdb.set_convenience_variable( 'result', result )
     gdb.execute( 'finish' )
 
-except: 
-    # Обработка исключений: $result = false.
+# Обработка исключений: $result = false.
+except Exception as ex:
     gdb.set_convenience_variable( 'result', False )
 
 finally:
+    conn = gdb.selected_inferior().connection
     # Отключаемся и выходим.
-    gdb.execute( 'disconnect_and_quit' )
+    gdb.execute( ('quit !$result', 'disconnect_and_quit')[isinstance(conn, gdb.RemoteTargetConnection)] )
