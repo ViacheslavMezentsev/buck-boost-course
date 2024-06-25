@@ -1,0 +1,86 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: build",
+      "type": "cmake",
+      "command": "build",
+      "targets": [ "all" ],
+      "group": "build",
+      "detail": "Сборка и проекта."
+    },
+    // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
+    {
+      "label": "Flash Master (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if SWD -speed 4000 -NoGui 1 -USB Master -CommandFile flash.jlink)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Master мк (j-link)."
+    },
+    {
+      "label": "Flash Slave (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if SWD -speed 4000 -NoGui 1 -USB Slave -CommandFile flash.jlink)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Slave мк (j-link)."
+    },
+    {
+      "label": "Flash Master & Slave (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo loadfile debug/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (for %n in (Master,Slave) do JLink.exe -NoGui 1 -USB %n -CommandFile flash.jlink)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка Master и Slave мк (j-link)."
+    },
+    {
+      "label": "Reset Master & Slave (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo q) > flash.jlink) && (for %n in (Master,Slave) do JLink.exe -NoGui 1 -USB %n -CommandFile flash.jlink)"
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Сброс Master и Slave мк (j-link)."
+    },
+    {
+      "label": "Flash (st-flash)",
+      "type": "shell",
+      "command": "st-flash",
+      "args": [
+        "--reset",
+        "write",
+        "${command:cmake.buildDirectory}/${workspaceFolderBasename}.bin",
+        "0x8000000"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "dependsOn": "CMake: build",
+      "group": "build",
+      "detail": "Сборка и прошивка проекта (st-link)."
+    },
+    {
+      "label": "Erase (st-flash)",
+      "type": "shell",
+      "command": "st-flash",
+      "args": [ "--connect-under-reset", "erase" ],
+      "detail": "Полная очистка чипа."
+    }
+  ]
+}
